@@ -1,0 +1,176 @@
+:root{
+  --pink: #F4C2C2;
+  --cream: #FFF8F6;
+  --lavender: #F3EEF9;
+  --muted: #8a6b6b;
+  --glass: rgba(255,255,255,0.55);
+  --card-radius: 18px;
+  --text-soft: #5b4141;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, var(--pink) 0%, #F7DCDC 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color:var(--text-soft);
+  overflow:hidden;
+}
+
+/* subtle paper-like noise using radial-gradients for a faint shimmer */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255,255,255,0.02), transparent 10%),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.015), transparent 10%),
+    radial-gradient(circle at 50% 40%, rgba(255,255,255,0.01), transparent 8%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* container for central card */
+.container{
+  width:100%;
+  max-width:760px;
+  padding:28px;
+  z-index:1;
+}
+
+/* card */
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.80), rgba(255,250,249,0.75));
+  border-radius: var(--card-radius);
+  padding:36px 36px 56px;
+  box-shadow: 0 10px 30px rgba(101,72,72,0.12);
+  border: 1px solid rgba(255,255,255,0.6);
+  position:relative;
+  overflow:visible;
+}
+
+/* top intro lines */
+.intro{
+  text-align:center;
+  margin-bottom:18px;
+}
+
+.top-line{
+  font-family: "Martel", serif;
+  font-size:18px;
+  color:var(--muted);
+  opacity:0.95;
+  letter-spacing:1px;
+}
+
+.name{
+  font-family:"Martel", serif;
+  font-size:44px;
+  margin-top:8px;
+  color:#6b3f3f;
+  letter-spacing:1px;
+}
+
+/* main message container */
+.message{
+  margin-top:18px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-height:230px;
+}
+
+/* each line */
+.line{
+  font-size:20px;
+  line-height:1.45;
+  max-width:720px;
+  opacity:0;
+  transform:translateY(10px);
+  transition: opacity 700ms ease, transform 700ms cubic-bezier(.2,.9,.2,1);
+  color: #4f3b3b;
+  font-weight:400;
+  font-family: Inter, system-ui, -apple-system;
+}
+
+/* when visible */
+.line.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* smaller muted hint text */
+.hint{
+  margin-top:20px;
+  text-align:center;
+  color: #6a4f4f;
+  font-size:13px;
+  opacity:0.85;
+}
+
+/* secret heart button — nearly invisible but accessible */
+.secret-heart{
+  position:absolute;
+  right:18px;
+  bottom:14px;
+  border: none;
+  background: transparent;
+  color: rgba(107,63,63,0.06);
+  padding:8px;
+  border-radius:50%;
+  cursor:pointer;
+  transition: color 300ms, transform 250ms;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:3;
+  outline: none;
+}
+.secret-heart:focus{
+  box-shadow: 0 0 0 4px rgba(244,194,194,0.3);
+  color: rgba(107,63,63,0.18);
+}
+.secret-heart:hover{
+  transform:translateY(-2px);
+  color: rgba(107,63,63,0.1);
+}
+
+/* final message box that appears on reveal */
+.final-box{
+  margin-top:22px;
+  text-align:center;
+  font-family: "Martel", serif;
+  font-size:20px;
+  color:#5b3f3f;
+  min-height:50px;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity 800ms ease, transform 800ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* canvas for petals */
+.canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+}
+
+/* small responsive tweaks */
+@media (max-width:520px){
+  .card{padding:24px}
+  .name{font-size:36px}
+  .line{font-size:18px}
+}
+.visually-hidden{
+  position:absolute!important;
+  height:1px;width:1px;overflow:hidden;
+  clip:rect(1px,1px,1px,1px);
+  white-space:nowrap;border:0;padding:0;margin:-1px;
+}

@@ -1,0 +1,131 @@
+// script.js
+// Birthday reveal sequence for Shivani
+
+const lines = [
+  "Today the sky remembers your first smile — it keeps that soft light for you.",
+  "There are quiet ways the world seems kinder when you walk into the room.",
+  "Your laughter stitches warmth into ordinary days, until they glow.",
+  "I see the strength you hide beneath your gentleness — steady, patient, true.",
+  "For every small worry you carry, know someone carries faith in you.",
+  "On this day we celebrate the gentle bravery that you bring to everything.",
+  "May this year give you moments that cradle your heart and make you shine brighter."
+];
+
+// timing config (ms)
+const revealDelay = 900;     // time before first line appears
+const betweenLines = 1500;   // how long each line lingers before next appears
+
+const messageEl = document.getElementById('message');
+const finalBox = document.getElementById('finalBox');
+const secretBtn = document.getElementById('secretBtn');
+const canvas = document.getElementById('canvas');
+
+// Create line elements
+lines.forEach(text => {
+  const div = document.createElement('div');
+  div.className = 'line';
+  div.textContent = text;
+  messageEl.appendChild(div);
+});
+
+// reveal lines one by one
+const lineEls = Array.from(document.querySelectorAll('.line'));
+
+function revealSequence() {
+  let i = 0;
+  setTimeout(function showNext(){
+    if (i >= lineEls.length) return;
+    lineEls[i].classList.add('visible');
+    i++;
+    setTimeout(showNext, betweenLines);
+  }, revealDelay);
+}
+
+// initialize sequence
+revealSequence();
+
+// Interactive tiny heart: reveal final personal message + petals
+secretBtn.addEventListener('click', () => {
+  // Avoid multiple clicks
+  secretBtn.disabled = true;
+
+  // final personal message (keeps the core animated message free of certain phrases)
+  finalBox.textContent = "Always beside you — through every sunrise and hush of night. Forever and for all the little tomorrows.";
+  // animate the final box to appear
+  requestAnimationFrame(() => {
+    finalBox.style.opacity = '1';
+    finalBox.style.transform = 'translateY(0)';
+  });
+
+  // launch a gentle petals cascade
+  launchPetals();
+});
+
+// Petals animation: create small heart-shaped petals that float and fade
+function launchPetals() {
+  const count = 28;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  for (let i=0;i<count;i++){
+    createPetal(i);
+  }
+
+  function createPetal(i){
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    const size = 8 + Math.random()*18;
+    petal.style.width = `${size}px`;
+    petal.style.height = `${size}px`;
+    petal.style.position = 'fixed';
+    petal.style.left = `${30 + Math.random()*(w-60)}px`;
+    petal.style.top = `${h - 40 + Math.random()*20}px`;
+    petal.style.pointerEvents = 'none';
+    petal.style.zIndex = 2;
+    // use an SVG heart inside for nicer shape
+    petal.innerHTML = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" focusable="false">
+      <path d="M12 21s-7-4.9-9.2-8.1C-0.3 8.7 4.1 4 7.6 6.1c1.4.8 2.1 2.1 2.4 2.9.3-.8 1-2.1 2.4-2.9C19.9 4 24.3 8.7 21.2 12.9 19 16.1 12 21 12 21z" fill="#ffffff" opacity="0.95"/>
+    </svg>`;
+    canvas.appendChild(petal);
+
+    // compute a gentle floating path
+    const duration = 4200 + Math.random()*2000;
+    const driftX = (-120 + Math.random()*240);
+    const endY = -80 - Math.random()*160;
+    const rotation = (-30 + Math.random()*60);
+
+    petal.animate([
+      { transform: `translate(0px, 0px) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${driftX}px, ${endY}px) rotate(${rotation}deg)`, opacity: 0.02 }
+    ], {
+      duration,
+      easing: 'cubic-bezier(.2,.9,.2,1)',
+      delay: i * 80
+    });
+
+    // remove after animation
+    setTimeout(() => {
+      petal.remove();
+    }, duration + i*80 + 200);
+  }
+}
+
+// Accessibility: allow Enter key on secretBtn to trigger click
+secretBtn.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    secretBtn.click();
+  }
+});
+
+// Small progressive reveal: make secret button slightly more visible after full sequence
+setTimeout(() => {
+  secretBtn.style.color = 'rgba(107,63,63,0.06)'; // still subtle
+  secretBtn.style.opacity = '0.98';
+  // but keep it visually modest — the hint text guides the user
+}, lines.length * betweenLines + revealDelay + 400);
+
+// Make sure resizing doesn't leave stray petals off-screen
+window.addEventListener('resize', () => {
+  // noop for now — petals spawn with current viewport values
+});
